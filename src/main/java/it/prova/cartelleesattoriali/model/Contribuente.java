@@ -65,6 +65,17 @@ public class Contribuente {
 		this.cartelle = cartelle;
 	}
 
+	public Contribuente(Long id, String nome, String cognome, Date dataNascita, String codiceFiscale,
+			String indirizzo) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.cognome = cognome;
+		this.dataNascita = dataNascita;
+		this.codiceFiscale = codiceFiscale;
+		this.indirizzo = indirizzo;
+	}
+
 	public Contribuente(Long id, String nome, String cognome, Date dataNascita, String codiceFiscale, String indirizzo,
 			Set<CartellaEsattoriale> cartelle) {
 		super();
