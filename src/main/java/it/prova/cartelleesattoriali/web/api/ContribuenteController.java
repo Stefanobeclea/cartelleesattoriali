@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,12 +19,9 @@ import org.springframework.http.HttpStatus;
 import it.prova.cartelleesattoriali.dto.ContribuenteDTO;
 import it.prova.cartelleesattoriali.model.Contribuente;
 import it.prova.cartelleesattoriali.service.ContribuenteService;
+import it.prova.cartelleesattoriali.web.api.exception.ContribuenteConCartelleException;
 import it.prova.cartelleesattoriali.web.api.exception.ContribuenteNotFoundException;
 import it.prova.cartelleesattoriali.web.api.exception.IdNotNullForInsertException;
-import it.prova.raccoltafilmspringrest.dto.ContribuenteDTO;
-import it.prova.raccoltafilmspringrest.model.Contribuente;
-import it.prova.raccoltafilmspringrest.web.api.exception.ContribuenteNotFoundException;
-
 
 @RestController
 @RequestMapping("api/contribuente")
@@ -68,5 +66,18 @@ public class ContribuenteController {
 		contribuenteInput.setId(id);
 		Contribuente contribuenteAggiornato = contribuenteService.aggiorna(contribuenteInput.buildContribuenteModel());
 		return ContribuenteDTO.buildContribuenteDTOFromModel(contribuenteAggiornato, false);
+	}
+	
+	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public void delete(@PathVariable(required = true) Long id) {
+		Contribuente contribuente = contribuenteService.caricaSingoloElementoConCartelle(id);
+
+		if (contribuente == null)
+			throw new ContribuenteNotFoundException("Contribuente not found con id: " + id);
+		if(!contribuente.getCartelle().isEmpty())
+			throw new ContribuenteConCartelleException("Contribuente Possiede Cartelle");
+
+		contribuenteService.rimuovi(contribuente);
 	}
 }

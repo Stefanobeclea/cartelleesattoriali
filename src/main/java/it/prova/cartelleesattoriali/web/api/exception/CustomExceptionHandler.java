@@ -37,7 +37,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
 
 	@ExceptionHandler(ContribuenteNotFoundException.class)
-	public ResponseEntity<Object> handleRegistaNotFoundException(ContribuenteNotFoundException ex, WebRequest request) {
+	public ResponseEntity<Object> handleContribuenteNotFoundException(ContribuenteNotFoundException ex, WebRequest request) {
 
 		Map<String, Object> body = new LinkedHashMap<>();
 		body.put("timestamp", LocalDateTime.now());
@@ -58,7 +58,20 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return new ResponseEntity<>(body, HttpStatus.UNPROCESSABLE_ENTITY);
 	}
+	
+	@ExceptionHandler(ContribuenteConCartelleException.class)
+	public ResponseEntity<Object> handleContribuenteConCartelleException(ContribuenteConCartelleException ex,
+			WebRequest request) {
 
+		Map<String, Object> body = new LinkedHashMap<>();
+		body.put("timestamp", LocalDateTime.now());
+		body.put("message", ex.getMessage());
+		body.put("status", HttpStatus.UNPROCESSABLE_ENTITY);
+
+		return new ResponseEntity<>(body, HttpStatus.UNPROCESSABLE_ENTITY);
+	}
+
+	
 	
 
 }
