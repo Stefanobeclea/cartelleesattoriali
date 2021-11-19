@@ -3,10 +3,12 @@ package it.prova.cartelleesattoriali.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import it.prova.cartelleesattoriali.model.Contribuente;
 import it.prova.cartelleesattoriali.repository.contribuente.ContribuenteRepository;
 
+@Service
 public class ContribuenteServiceImpl implements ContribuenteService{
 
 	@Autowired
