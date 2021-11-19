@@ -80,4 +80,10 @@ public class ContribuenteController {
 
 		contribuenteService.rimuovi(contribuente);
 	}
+	
+	@PostMapping("/search")
+	public List<ContribuenteDTO> search(@RequestBody ContribuenteDTO example) {
+		return ContribuenteDTO.createContribuenteDTOListFromModelList(contribuenteService.findByExample(example.buildContribuenteModel()),
+				false);
+	}
 }
