@@ -1,5 +1,6 @@
 package it.prova.cartelleesattoriali.web.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import it.prova.cartelleesattoriali.dto.CartellaEsattorialeDTO;
 import it.prova.cartelleesattoriali.dto.ContribuenteDTO;
 import it.prova.cartelleesattoriali.dto.ContribuenteReportDTO;
+import it.prova.cartelleesattoriali.model.CartellaEsattoriale;
 import it.prova.cartelleesattoriali.model.Contribuente;
 import it.prova.cartelleesattoriali.model.Stato;
 import it.prova.cartelleesattoriali.service.ContribuenteService;
@@ -110,5 +112,22 @@ public class ContribuenteController {
 			contribuenteItem.setImporto(importoCartelle);
 		}
 		return contribuentiPerReport;
+	}
+	
+	@GetMapping("/verifica")
+	public List<ContribuenteReportDTO> verificaContenziosi(){
+		List<Contribuente> contribuentiPerVerifica = contribuenteService.listAllElementsEager();
+		List<ContribuenteReportDTO> listaRisultato = new ArrayList<ContribuenteReportDTO>();
+		
+		for (Contribuente contribuenteItem : contribuentiPerVerifica) {
+			ContribuenteReportDTO contribuenteReport = ContribuenteReportDTO.buildContribuenteReportDTOFromModel(contribuenteItem, false);
+			for (CartellaEsattoriale cartellaItem : contribuenteItem.getCartelle()) {
+				if(cartellaItem.getStato().equals(Stato.IN_CONTENZIOSO)) {
+					contribuenteReport.setDaAttenzionare(true);
+				}
+			}
+			listaRisultato.add(contribuenteReport);
+		}
+		return listaRisultato;
 	}
 }
