@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 
+import it.prova.cartelleesattoriali.dto.CartellaEsattorialeDTO;
 import it.prova.cartelleesattoriali.dto.ContribuenteDTO;
+import it.prova.cartelleesattoriali.dto.ContribuenteReportDTO;
 import it.prova.cartelleesattoriali.model.Contribuente;
+import it.prova.cartelleesattoriali.model.Stato;
 import it.prova.cartelleesattoriali.service.ContribuenteService;
 import it.prova.cartelleesattoriali.web.api.exception.ContribuenteConCartelleException;
 import it.prova.cartelleesattoriali.web.api.exception.ContribuenteNotFoundException;
@@ -85,5 +88,27 @@ public class ContribuenteController {
 	public List<ContribuenteDTO> search(@RequestBody ContribuenteDTO example) {
 		return ContribuenteDTO.createContribuenteDTOListFromModelList(contribuenteService.findByExample(example.buildContribuenteModel()),
 				false);
+	}
+	
+	@GetMapping("/report")
+	public List<ContribuenteReportDTO> reportContribuenti() {
+		List<ContribuenteReportDTO> contribuentiPerReport = ContribuenteReportDTO.createContribuenteReportDTOListFromModelList(contribuenteService.listAllElementsEager(), true);
+		
+		for (ContribuenteReportDTO contribuenteItem : contribuentiPerReport) {
+			int importoCartelle = 0;
+			int contenzioso = 0;
+			int conclusoEPagato = 0;
+			for (CartellaEsattorialeDTO cartellaItem : contribuenteItem.getCartelle()) {
+				importoCartelle += cartellaItem.getImporto();
+				if(cartellaItem.getStato().equals(Stato.CONCLUSA))
+					conclusoEPagato += cartellaItem.getImporto();
+				if(cartellaItem.getStato().equals(Stato.IN_CONTENZIOSO))
+					contenzioso += cartellaItem.getImporto();
+			}
+			contribuenteItem.setContenzioso(contenzioso);
+			contribuenteItem.setPagato(conclusoEPagato);
+			contribuenteItem.setImporto(importoCartelle);
+		}
+		return contribuentiPerReport;
 	}
 }
