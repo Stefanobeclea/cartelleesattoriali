@@ -5,12 +5,15 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.prova.cartelleesattoriali.dto.CartellaEsattorialeDTO;
@@ -18,6 +21,8 @@ import it.prova.cartelleesattoriali.model.CartellaEsattoriale;
 import it.prova.cartelleesattoriali.service.CartellaEsattorialeService;
 import it.prova.cartelleesattoriali.web.api.exception.CartellaEsattorialeNotFoundException;
 import it.prova.cartelleesattoriali.web.api.exception.IdNotNullForInsertException;
+import it.prova.raccoltacartellaEsattorialespringrest.model.CartellaEsattoriale;
+import it.prova.raccoltacartellaEsattorialespringrest.web.api.exception.RegistaNotFoundException;
 
 @RestController
 @RequestMapping("api/cartellaesattoriale")
@@ -61,5 +66,16 @@ public class CartellaEsattorialeController {
 		cartellaEsattorialeInput.setId(id);
 		CartellaEsattoriale cartellaEsattorialeAggiornato = cartellaEsattorialeService.aggiorna(cartellaEsattorialeInput.buildCartellaEsattorialeModel());
 		return CartellaEsattorialeDTO.buildCartellaEsattorialeDTOFromModel(cartellaEsattorialeAggiornato, false);
+	}
+	
+	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public void delete(@PathVariable(required = true) Long id) {
+		CartellaEsattoriale cartellaEsattoriale = cartellaEsattorialeService.caricaSingoloElemento(id);
+
+		if (cartellaEsattoriale == null)
+			throw new CartellaEsattorialeNotFoundException("CartellaEsattoriale not found con id: " + id);
+
+		cartellaEsattorialeService.rimuovi(cartellaEsattoriale);
 	}
 }
