@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,5 +49,17 @@ public class CartellaEsattorialeController {
 			throw new CartellaEsattorialeNotFoundException("CartellaEsattoriale not found con id: " + id);
 		
 		return CartellaEsattorialeDTO.buildCartellaEsattorialeDTOFromModel(cartellaEsattoriale, true);
+	}
+	
+	@PutMapping("/{id}")
+	public CartellaEsattorialeDTO update(@Valid @RequestBody CartellaEsattorialeDTO cartellaEsattorialeInput, @PathVariable(required = true) Long id) {
+		CartellaEsattoriale cartellaEsattoriale = cartellaEsattorialeService.caricaSingoloElemento(id);
+
+		if (cartellaEsattoriale == null)
+			throw new CartellaEsattorialeNotFoundException("CartellaEsattoriale not found con id: " + id);
+
+		cartellaEsattorialeInput.setId(id);
+		CartellaEsattoriale cartellaEsattorialeAggiornato = cartellaEsattorialeService.aggiorna(cartellaEsattorialeInput.buildCartellaEsattorialeModel());
+		return CartellaEsattorialeDTO.buildCartellaEsattorialeDTOFromModel(cartellaEsattorialeAggiornato, false);
 	}
 }
