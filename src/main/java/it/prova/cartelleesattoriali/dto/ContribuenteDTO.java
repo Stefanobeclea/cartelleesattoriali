@@ -147,11 +147,14 @@ public class ContribuenteDTO {
 		return new Contribuente(this.id, this.nome, this.cognome, this.dataNascita, this.codiceFiscale, this.indirizzo);
 	}
 
-	public static ContribuenteDTO buildContribuenteDTOFromModel(Contribuente contribuenteModel, boolean includeCartelle) {
-		ContribuenteDTO result = new ContribuenteDTO(contribuenteModel.getId(), contribuenteModel.getNome(), contribuenteModel.getCognome(),
-				 contribuenteModel.getDataNascita(), contribuenteModel.getCodiceFiscale(), contribuenteModel.getIndirizzo());
-		if(includeCartelle)
-			result.setCartelle(CartellaEsattorialeDTO.createCartellaEsattorialeDTOSetFromModelSet(contribuenteModel.getCartelle(), false));
+	public static ContribuenteDTO buildContribuenteDTOFromModel(Contribuente contribuenteModel,
+			boolean includeCartelle) {
+		ContribuenteDTO result = new ContribuenteDTO(contribuenteModel.getId(), contribuenteModel.getNome(),
+				contribuenteModel.getCognome(), contribuenteModel.getDataNascita(),
+				contribuenteModel.getCodiceFiscale(), contribuenteModel.getIndirizzo());
+		if (includeCartelle)
+			result.setCartelle(CartellaEsattorialeDTO
+					.createCartellaEsattorialeDTOSetFromModelSet(contribuenteModel.getCartelle(), false));
 		return result;
 	}
 
