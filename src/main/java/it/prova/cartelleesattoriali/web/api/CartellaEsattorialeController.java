@@ -21,8 +21,6 @@ import it.prova.cartelleesattoriali.model.CartellaEsattoriale;
 import it.prova.cartelleesattoriali.service.CartellaEsattorialeService;
 import it.prova.cartelleesattoriali.web.api.exception.CartellaEsattorialeNotFoundException;
 import it.prova.cartelleesattoriali.web.api.exception.IdNotNullForInsertException;
-import it.prova.raccoltacartellaEsattorialespringrest.model.CartellaEsattoriale;
-import it.prova.raccoltacartellaEsattorialespringrest.web.api.exception.RegistaNotFoundException;
 
 @RestController
 @RequestMapping("api/cartellaesattoriale")
@@ -77,5 +75,11 @@ public class CartellaEsattorialeController {
 			throw new CartellaEsattorialeNotFoundException("CartellaEsattoriale not found con id: " + id);
 
 		cartellaEsattorialeService.rimuovi(cartellaEsattoriale);
+	}
+	
+	@PostMapping("/search")
+	public List<CartellaEsattorialeDTO> search(@RequestBody CartellaEsattorialeDTO example) {
+		return CartellaEsattorialeDTO.createCartellaEsattorialeDTOListFromModelList(cartellaEsattorialeService.findByExample(example.buildCartellaEsattorialeModel()),
+				false);
 	}
 }
